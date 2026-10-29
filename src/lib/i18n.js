@@ -29,7 +29,7 @@ const ar = {
   newTitle: 'تسجيل مكالمة جديدة', detailTitle: 'تفاصيل المكالمة', close: 'قفل', saveNew: 'حفظ المكالمة', saveEdit: 'حفظ التعديلات', cancel: 'إلغاء', saving: 'بيتحفظ...',
   fPhone: 'رقم التليفون', fName: 'الاسم بالكامل', fDevice: 'الجهاز اللي سأل عليه', fDevicePh: 'اكتب أو اختار من ليستة الأسعار', fPrice: 'الفئة السعرية', choose: 'اختار',
   fQuoted: 'السعر اللي اتقاله', fSale: 'اتباع بكام', fSaleHint: 'المبلغ اللي العميل دفعه فعلًا', fSource: 'عرف منين', fCampaign: 'الكامبين', fStatus: 'الحالة', fCancel: 'سبب الكنسلة', fCancelPick: 'اختار السبب', fCancelNote: 'تفاصيل أكتر (اختياري)',
-  fBranch: 'الفرع أو التوصيل', fNotes: 'ملاحظات', history: 'اللي حصل في المكالمة دي', fCategory: 'الفئة', fFollow: 'أكلمه تاني يوم', fOwner: 'مسؤول عن الديل', optional: ' (اختياري)',
+  fBranch: 'الفرع أو التوصيل', fNotes: 'ملاحظات', fEmail: 'الإيميل', fAddress: 'العنوان (للتوصيل)', fAddressPh: 'المنطقة، الشارع، رقم العمارة والدور', badEmail: 'الإيميل مش مظبوط', history: 'اللي حصل في المكالمة دي', fCategory: 'الفئة', fFollow: 'أكلمه تاني يوم', fOwner: 'مسؤول عن الديل', optional: ' (اختياري)',
   fromList: 'من ليستة الأسعار', inStock: 'متوفر', outStock: 'مش متوفر',
   notMobile: 'الرقم ده مش شكل موبايل مصري (01xxxxxxxxx). اتأكد منه.', calledBefore: (n, name) => `العميل ده كلمنا ${n} مرة قبل كده${name ? ' باسم ' + name : ''}`,
   mustFill: 'لازم تكتب: ', saved: 'المكالمة اتسجلت', editSaved: 'التعديلات اتحفظت', noChange: 'مفيش حاجة اتغيرت', deleted: 'المكالمة اتمسحت',
@@ -74,7 +74,7 @@ const ar = {
   bannerTitle: n => n === 1 ? 'عندك متابعة واحدة النهارده' : `عندك ${n} متابعات النهارده`, bannerOpen: 'كل المتابعات', bannerHide: 'إخفاء', bannerLate: 'متأخرة',
   notifOn: 'فعّل التنبيهات على الجهاز ده', notifOk: 'التنبيهات شغالة على الجهاز ده', notifDenied: 'التنبيهات مقفولة من إعدادات المتصفح', notifHint: 'أول ما تفتح الموقع كل يوم هيطلعلك تنبيه بمتابعاتك. على الآيفون لازم تضيف الموقع للشاشة الرئيسية الأول (Share ← Add to Home Screen).',
   notifBody: names => 'كلّم: ' + names,
-  xCols: ['التاريخ', 'الوقت', 'الاسم', 'التليفون', 'الفئة', 'الجهاز', 'الفئة السعرية', 'السعر اللي اتقال', 'اتباع بكام', 'عرف منين', 'الكامبين', 'الإعلان', 'كود الإعلان', 'الحالة', 'سبب الكنسلة', 'تفاصيل الكنسلة', 'الفرع', 'متابعة يوم', 'ملاحظات', 'سجلها', 'مسؤول عن الديل', 'آخر تعديل', 'عدّلها'],
+  xCols: ['التاريخ', 'الوقت', 'الاسم', 'التليفون', 'الإيميل', 'العنوان', 'الفئة', 'الجهاز', 'الفئة السعرية', 'السعر اللي اتقال', 'اتباع بكام', 'عرف منين', 'الكامبين', 'الإعلان', 'كود الإعلان', 'الحالة', 'سبب الكنسلة', 'تفاصيل الكنسلة', 'الفرع', 'متابعة يوم', 'ملاحظات', 'سجلها', 'مسؤول عن الديل', 'آخر تعديل', 'عدّلها'],
 };
 
 const en = {
@@ -96,7 +96,7 @@ const en = {
   newTitle: 'Log a new call', detailTitle: 'Call details', close: 'Close', saveNew: 'Save call', saveEdit: 'Save changes', cancel: 'Cancel', saving: 'Saving...',
   fPhone: 'Phone number', fName: 'Full name', fDevice: 'Device asked about', fDevicePh: 'Type or pick from the price list', fPrice: 'Price range', choose: 'Choose',
   fQuoted: 'Price quoted', fSale: 'Sold for', fSaleHint: 'What the customer actually paid', fSource: 'How they found us', fCampaign: 'Campaign', fStatus: 'Status', fCancel: 'Cancellation reason', fCancelPick: 'Choose a reason', fCancelNote: 'More detail (optional)',
-  fBranch: 'Branch or delivery', fNotes: 'Notes', history: 'History of this call', fCategory: 'Category', fFollow: 'Call back on', fOwner: 'Deal owner', optional: ' (optional)',
+  fBranch: 'Branch or delivery', fNotes: 'Notes', fEmail: 'Email', fAddress: 'Address (for delivery)', fAddressPh: 'Area, street, building and floor', badEmail: 'That email doesn\'t look right', history: 'History of this call', fCategory: 'Category', fFollow: 'Call back on', fOwner: 'Deal owner', optional: ' (optional)',
   fromList: 'From the price list', inStock: 'In stock', outStock: 'Out of stock',
   notMobile: 'This doesn’t look like an Egyptian mobile number (01xxxxxxxxx). Please check it.', calledBefore: (n, name) => `This customer called ${n} time${n === 1 ? '' : 's'} before${name ? ' as ' + name : ''}`,
   mustFill: 'Please fill in: ', saved: 'Call saved', editSaved: 'Changes saved', noChange: 'Nothing changed', deleted: 'Call deleted',
@@ -135,7 +135,7 @@ const en = {
   bannerTitle: n => n === 1 ? 'You have 1 follow-up today' : `You have ${n} follow-ups today`, bannerOpen: 'All follow-ups', bannerHide: 'Hide', bannerLate: 'late',
   notifOn: 'Turn on reminders on this device', notifOk: 'Reminders are on for this device', notifDenied: 'Notifications are blocked in this browser\'s settings', notifHint: 'Each day when you open the site you get a reminder of your follow-ups. On iPhone, add the site to the Home Screen first (Share → Add to Home Screen).',
   notifBody: names => 'Call: ' + names,
-  xCols: ['Date', 'Time', 'Name', 'Phone', 'Category', 'Device', 'Price range', 'Price quoted', 'Sold for', 'Source', 'Campaign', 'Ad', 'Ad ID', 'Status', 'Cancel reason', 'Cancel detail', 'Branch', 'Call back on', 'Notes', 'Logged by', 'Deal owner', 'Last edited', 'Edited by'],
+  xCols: ['Date', 'Time', 'Name', 'Phone', 'Email', 'Address', 'Category', 'Device', 'Price range', 'Price quoted', 'Sold for', 'Source', 'Campaign', 'Ad', 'Ad ID', 'Status', 'Cancel reason', 'Cancel detail', 'Branch', 'Call back on', 'Notes', 'Logged by', 'Deal owner', 'Last edited', 'Edited by'],
 };
 
 export const DICT = { ar, en };

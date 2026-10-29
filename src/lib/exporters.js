@@ -4,7 +4,7 @@ import { DICT, LISTS, money } from './i18n.js';
 
 function rows(calls, ctx) {
   const { lang } = ctx; const L = (list, v) => { if (!v) return ''; const r = LISTS[list].find(x => x[0] === v); return r ? r[lang === 'ar' ? 1 : 2] : v; };
-  return calls.map(c => [c.call_date, fmtTime(c.created_at, lang), c.name, c.phone, L('cat', c.category), c.device, L('price', c.price_range), c.quoted_price ?? '', c.sale_amount ?? '',
+  return calls.map(c => [c.call_date, fmtTime(c.created_at, lang), c.name, c.phone, c.email || '', c.address || '', L('cat', c.category), c.device, L('price', c.price_range), c.quoted_price ?? '', c.sale_amount ?? '',
     L('source', c.source), ctx.campaignOf(c.campaign_id), ctx.adOf(c.ad_id), ctx.adMetaId(c.ad_id), L('status', c.status), L('cancel', c.cancel_reason), c.cancel_note || '', L('branch', c.branch), c.follow_up_date || '', c.notes || '',
     ctx.nameOf(c.created_by), ctx.nameOf(c.owner_id), c.updated_at ? fmtDate(c.updated_at, lang) + ' ' + fmtTime(c.updated_at, lang) : '', ctx.nameOf(c.updated_by)]);
 }
@@ -32,10 +32,10 @@ export function exportCsv(calls, ctx) {
 export function exportMeta(calls, ctx) {
   const sales = calls.filter(c => c.status === 'delivered' && isMobile(c.phone));
   if (!sales.length) return ctx.toast(ctx.t('noSales'));
-  const head = ['event_name', 'event_time', 'phone', 'fn', 'ln', 'country', 'value', 'currency', 'order_id', 'content_name'];
+  const head = ['event_name', 'event_time', 'phone', 'email', 'fn', 'ln', 'country', 'value', 'currency', 'order_id', 'content_name'];
   const body = sales.map(c => {
     const parts = (c.name || '').trim().split(/\s+/);
-    return ['Purchase', new Date(c.delivered_at || c.updated_at).toISOString(), '+' + intlPhone(c.phone), parts[0] || '', parts.slice(1).join(' '), 'EG', c.sale_amount ?? '', 'EGP', c.id, c.device].map(csvEsc).join(',');
+    return ['Purchase', new Date(c.delivered_at || c.updated_at).toISOString(), '+' + intlPhone(c.phone), (c.email || '').trim().toLowerCase(), parts[0] || '', parts.slice(1).join(' '), 'EG', c.sale_amount ?? '', 'EGP', c.id, c.device].map(csvEsc).join(',');
   });
   download(fname(ctx, 'csv', 'meta-offline-purchases'), [head.join(','), ...body].join('\r\n'), 'text/csv;charset=utf-8');
 }

@@ -5,7 +5,7 @@ import { useT, money } from '../lib/i18n.js';
 const FIELD = {
   phone: ['التليفون', 'Phone'], name: ['الاسم', 'Name'], category: ['الفئة', 'Category', 'cat'], device: ['الجهاز', 'Device'], product_id: null,
   price_range: ['الفئة السعرية', 'Price range', 'price'], quoted_price: ['السعر اللي اتقال', 'Price quoted', 'money'], sale_amount: ['اتباع بكام', 'Sold for', 'money'],
-  source: ['عرف منين', 'Source', 'source'], campaign_id: ['الكامبين', 'Campaign', 'campaign'], ad_id: ['الإعلان', 'Ad', 'ad'], branch: ['الفرع', 'Branch', 'branch'], status: ['الحالة', 'Status', 'status'],
+  source: ['عرف منين', 'Source', 'source'], campaign_id: ['الكامبين', 'Campaign', 'campaign'], ad_id: ['الإعلان', 'Ad', 'ad'], email: ['الإيميل', 'Email'], address: ['العنوان', 'Address'], branch: ['الفرع', 'Branch', 'branch'], status: ['الحالة', 'Status', 'status'],
   cancel_reason: ['سبب الكنسلة', 'Cancel reason', 'cancel'], cancel_note: ['تفاصيل الكنسلة', 'Cancel detail'], follow_up_date: ['متابعة يوم', 'Call back on'], notes: ['ملاحظات', 'Notes'], owner_id: ['مسؤول عن الديل', 'Deal owner', 'person'],
 };
 

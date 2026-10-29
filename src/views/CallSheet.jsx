@@ -5,7 +5,7 @@ import { usePhoneHistory } from './Calls.jsx';
 import { describeEvent } from './ActivityLog.jsx';
 import { CalButtons } from './FollowUps.jsx';
 
-const EMPTY = { phone: '', name: '', category: 'iphone', device: '', product_id: null, price_range: '', quoted_price: '', sale_amount: '', source: '', campaign_id: '', ad_id: '', branch: '', status: 'inquiry', cancel_reason: '', cancel_note: '', follow_up_date: '', notes: '', owner_id: '' };
+const EMPTY = { phone: '', name: '', email: '', address: '', category: 'iphone', device: '', product_id: null, price_range: '', quoted_price: '', sale_amount: '', source: '', campaign_id: '', ad_id: '', branch: '', status: 'inquiry', cancel_reason: '', cancel_note: '', follow_up_date: '', notes: '', owner_id: '' };
 const EDITABLE = Object.keys(EMPTY);
 
 export default function CallSheet({ ctx, call, onClose, onSaved }) {
@@ -33,7 +33,7 @@ export default function CallSheet({ ctx, call, onClose, onSaved }) {
     if (isNew) return;
     supabase.from('call_events').select('*').eq('call_id', call.id).order('at').then(({ data }) => setEvents(data || []));
   }, [call, isNew]);
-  useEffect(() => { if (isNew && !d.name && prevCalls.length) set('name', prevCalls[0].name); }, [hist]); // eslint-disable-line
+  useEffect(() => { if (isNew && prevCalls.length) { const p = prevCalls[0]; setD(x => ({ ...x, name: x.name || p.name, email: x.email || p.email || '', address: x.address || p.address || '' })); } }, [hist]); // eslint-disable-line
   useEffect(() => { const onKey = e => { if (e.key === 'Escape') onClose(); }; window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey); }, [onClose]);
 
   const waTpl = ctx.settings[lang === 'ar' ? 'whatsapp_ar' : 'whatsapp_en'] || '';
@@ -41,21 +41,22 @@ export default function CallSheet({ ctx, call, onClose, onSaved }) {
   const ownerOptions = ctx.profiles.filter(p => p.active || p.id === d.owner_id);
 
   async function save() {
-    const data = { ...d, phone, name: d.name.trim(), device: d.device.trim(), notes: d.notes.trim(), cancel_note: d.cancel_note.trim() };
+    const data = { ...d, phone, name: d.name.trim(), device: d.device.trim(), notes: d.notes.trim(), cancel_note: d.cancel_note.trim(), email: d.email.trim().toLowerCase(), address: d.address.trim() };
     data.quoted_price = toNum(d.quoted_price); data.sale_amount = toNum(d.sale_amount);
-    for (const k of ['price_range', 'source', 'campaign_id', 'ad_id', 'branch', 'cancel_reason', 'follow_up_date', 'owner_id']) if (!data[k]) data[k] = null;
+    for (const k of ['email', 'address', 'price_range', 'source', 'campaign_id', 'ad_id', 'branch', 'cancel_reason', 'follow_up_date', 'owner_id']) if (!data[k]) data[k] = null;
     if (!data.price_range && data.quoted_price) data.price_range = priceBucket(data.quoted_price);
     if (data.status !== 'cancelled') { data.cancel_reason = null; data.cancel_note = null; }
     if (data.status !== 'delivered') data.sale_amount = data.sale_amount ?? null;
     const miss = [];
     if (phone.length < 8) miss.push(t('fPhone')); if (!data.name) miss.push(t('fName')); if (!data.device) miss.push(t('fDevice'));
+    if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) { setErr(t('badEmail')); return; }
     if (data.status === 'cancelled' && !data.cancel_reason) miss.push(t('fCancel'));
     if (data.status === 'delivered' && data.sale_amount == null) miss.push(t('fSale'));
     if (miss.length) { setErr(t('mustFill') + miss.join(lang === 'ar' ? '، ' : ', ')); return; }
     setBusy(true); setErr('');
     try {
       if (isNew) {
-        if (!data.ad_id) delete data.ad_id; // keeps saving working on a database that hasn't run update 2 yet
+        for (const k of ['ad_id', 'email', 'address']) if (!data[k]) delete data[k]; // empty optional columns are left out so saving works before the latest SQL update is run
         const { error } = await supabase.from('calls').insert(data); if (error) throw error;
         ctx.toast(t('saved'));
       } else {
@@ -93,6 +94,12 @@ export default function CallSheet({ ctx, call, onClose, onSaved }) {
               <input id="s-phone" ref={isNew ? firstRef : null} className="mono" dir="ltr" inputMode="tel" placeholder="01xxxxxxxxx" value={d.phone} onChange={e => set('phone', e.target.value)} /></div>
             <div className="field"><label htmlFor="s-name">{t('fName')}<span className="req"> *</span></label>
               <input id="s-name" value={d.name} onChange={e => set('name', e.target.value)} /></div>
+          </div>
+          <div className="grid2">
+            <div className="field"><label htmlFor="s-email">{t('fEmail')}{t('optional')}</label>
+              <input id="s-email" type="email" dir="ltr" autoComplete="off" placeholder="name@gmail.com" value={d.email} onChange={e => set('email', e.target.value)} /></div>
+            <div className="field"><label htmlFor="s-addr">{t('fAddress')}{t('optional')}</label>
+              <input id="s-addr" placeholder={t('fAddressPh')} value={d.address} onChange={e => set('address', e.target.value)} /></div>
           </div>
           {phone.length >= 8 && !isMobile(phone) && <div className="hint">{t('notMobile')}</div>}
           {isMobile(phone) && <div className="actions">

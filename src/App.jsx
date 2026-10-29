@@ -107,7 +107,7 @@ function Main({ me, onLang, reloadMe }) {
     return calls.filter(c => {
       if (filters.cat && c.category !== filters.cat) return false;
       if (filters.owner && c.owner_id !== filters.owner) return false;
-      if (q) { const hay = [c.name, c.device, c.notes].join(' ').toLowerCase(); if (!hay.includes(q) && !(qp.length >= 3 && (c.phone || '').includes(qp))) return false; }
+      if (q) { const hay = [c.name, c.device, c.notes, c.email, c.address].join(' ').toLowerCase(); if (!hay.includes(q) && !(qp.length >= 3 && (c.phone || '').includes(qp))) return false; }
       return true;
     });
   }, [calls, filters.cat, filters.owner, filters.q]);

@@ -44,6 +44,10 @@ Internal call log for the G Mobile team. Email/password login, every change is a
 
 شغّل `supabase/update-3-invites.sql` في SQL Editor.
 
+### 1.3 تحديث رقم 4 (الإيميل والعنوان)
+
+شغّل `supabase/update-4-email-address.sql` في SQL Editor.
+
 ### 2. Vercel
 
 1. [vercel.com/new](https://vercel.com/new) ← Import الـ repo ده.
