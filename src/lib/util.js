@@ -34,6 +34,17 @@ export function waLink(phone, template, vals) {
   return `https://wa.me/${intlPhone(phone)}?text=${encodeURIComponent(text)}`;
 }
 
+// Calendar reminder for a follow-up: 11:00-11:15 Cairo time on the follow-up day.
+export function calendarLinks(c, title, details) {
+  const d = c.follow_up_date.replace(/-/g, '');
+  const google = 'https://calendar.google.com/calendar/render?' + new URLSearchParams({ action: 'TEMPLATE', text: title, details, dates: `${d}T110000/${d}T111500`, ctz: 'Africa/Cairo' });
+  const esc = v => String(v).replace(/[\\;,]/g, m => '\\' + m).replace(/\n/g, '\\n');
+  const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//G Mobile//Calls//AR', 'BEGIN:VEVENT', `UID:${c.id}-${d}@gmobile-calls`,
+    'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z', `DTSTART;TZID=Africa/Cairo:${d}T110000`, `DTEND;TZID=Africa/Cairo:${d}T111500`,
+    'SUMMARY:' + esc(title), 'DESCRIPTION:' + esc(details), 'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc(title), 'TRIGGER:PT0M', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+  return { google, ics };
+}
+
 export function rangeFor(sel, custom) {
   const td = dayKey();
   if (sel === 'today') return { from: td, to: td };

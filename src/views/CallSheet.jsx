@@ -3,6 +3,7 @@ import { supabase, normPhone, isMobile, toNum, priceBucket, waLink, dayKey, addD
 import { useT, money } from '../lib/i18n.js';
 import { usePhoneHistory } from './Calls.jsx';
 import { describeEvent } from './ActivityLog.jsx';
+import { CalButtons } from './FollowUps.jsx';
 
 const EMPTY = { phone: '', name: '', category: 'iphone', device: '', product_id: null, price_range: '', quoted_price: '', sale_amount: '', source: '', campaign_id: '', ad_id: '', branch: '', status: 'inquiry', cancel_reason: '', cancel_note: '', follow_up_date: '', notes: '', owner_id: '' };
 const EDITABLE = Object.keys(EMPTY);
@@ -125,7 +126,10 @@ export default function CallSheet({ ctx, call, onClose, onSaved }) {
               <input id="s-follow" type="date" className="inp" style={{ width: 'auto' }} value={d.follow_up_date || ''} onChange={e => set('follow_up_date', e.target.value)} />
               {[[1, lang === 'ar' ? 'بكرة' : 'Tomorrow'], [3, lang === 'ar' ? 'بعد 3 أيام' : 'In 3 days'], [7, lang === 'ar' ? 'بعد أسبوع' : 'In a week']].map(([n, l]) => <button key={n} type="button" className="btn small" onClick={() => quick(n)}>{l}</button>)}
               {d.follow_up_date && <button type="button" className="btn small" onClick={() => set('follow_up_date', '')}>✕</button>}
-            </div></div>}
+            </div>
+            {d.follow_up_date && <><span className="hint">{t('fuCal')}: {t('calHint')}</span>
+              <div className="actions"><CalButtons c={{ ...d, id: call && call.id, phone, quoted_price: toNum(d.quoted_price) }} ctx={ctx} /></div></>}
+          </div>}
 
           <div className="grid2">
             <div className="field"><label htmlFor="s-owner">{t('fOwner')}</label>

@@ -187,3 +187,15 @@ table.mini td,table.mini th{padding:7px 8px}
 .plog time{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums;min-width:120px}
 .plog .who b{font-weight:600}
 .plog .ch{color:var(--muted)}
+.today-banner{background:var(--s-book-bg);border:1px solid color-mix(in srgb,var(--s-book) 35%,transparent);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.today-banner .tb-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.today-banner .tb-list{display:flex;flex-direction:column;gap:6px}
+.today-banner .tb-row{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;justify-content:space-between}
+.today-banner .late{color:var(--s-cancel);font-weight:600}
+.linkish{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-align:start}
+.fu-list{display:flex;flex-direction:column}
+.fu-row{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
+.fu-row:last-child{border-bottom:0}
+.fu-main{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-align:start;display:flex;flex-direction:column;gap:2px;flex:1 1 260px;min-width:0}
+.fu-main .sub{display:block}
+.fu-notify{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}

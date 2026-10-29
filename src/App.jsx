@@ -10,6 +10,7 @@ import Prices from './views/Prices.jsx';
 import Team from './views/Team.jsx';
 import Settings from './views/Settings.jsx';
 import CallSheet from './views/CallSheet.jsx';
+import { waFor, setFollow } from './views/FollowUps.jsx';
 import { exportExcel, exportCsv, exportMeta } from './lib/exporters.js';
 
 const FU_OPEN = ['inquiry', 'booked', 'not_delivered'];
@@ -49,7 +50,7 @@ function Gate({ onLang }) {
 function Main({ me, onLang, reloadMe }) {
   const { t, opts, lang } = useT();
   const isAdmin = me.role === 'admin';
-  const [view, setView] = useState('calls');
+  const [view, setView] = useState(() => new URLSearchParams(window.location.search).get('view') === 'follow' ? 'follow' : 'calls');
   const [rangeSel, setRangeSel] = useState('30');
   const [custom, setCustom] = useState({ from: '', to: '' });
   const range = useMemo(() => rangeFor(rangeSel, custom), [rangeSel, custom]);
@@ -111,9 +112,11 @@ function Main({ me, onLang, reloadMe }) {
     });
   }, [calls, filters.cat, filters.owner, filters.q]);
   const today = dayKey();
-  const dueCount = follow.filter(c => c.follow_up_date <= today).length;
+  const myDue = follow.filter(c => c.follow_up_date <= today && c.owner_id === me.id);
+  const dueCount = myDue.length;
+  useEffect(() => { remindOnce(myDue, today, t); }, [follow]); // eslint-disable-line
   const after = async (fn) => { await fn; loadCalls(); loadFollow(); };
-  const ctx = { me, isAdmin, t, lang, nameOf, campaignOf, adOf, adMetaId, profiles, products, campaigns, ads, settings, toast, openCall: c => setSheet(c || 'new'), range, reloadRefs: loadRefs, reloadMe };
+  const ctx = { me, isAdmin, t, lang, nameOf, campaignOf, adOf, adMetaId, profiles, products, campaigns, ads, settings, toast, openCall: c => setSheet(c || 'new'), range, reloadRefs: loadRefs, reloadMe, reloadFollow: () => { loadFollow(); loadCalls(); } };
 
   const months = []; { let m = today.slice(0, 7); for (let i = 0; i < 36; i++) { months.push(m); m = addDays(m + '-01', -1).slice(0, 7); } }
   const tabs = [['calls', t('tabCalls')], ['follow', t('tabFollow')], ['analysis', t('tabAnalysis')], ['log', t('tabLog')], ['prices', t('tabPrices')], ['team', t('tabTeam')], ...(isAdmin ? [['settings', t('tabSettings')]] : [])];
@@ -130,6 +133,7 @@ function Main({ me, onLang, reloadMe }) {
         <div className="me"><span>{me.full_name || me.email}</span><button className="btn small" onClick={() => supabase.auth.signOut()}>{t('signOut')}</button></div>
       </div></header>
       <main className="wrap">
+        {view !== 'follow' && <TodayBanner ctx={ctx} items={myDue} today={today} onOpen={() => setView('follow')} />}
         {showFilters && (
           <div className="bar">
             <button className="btn primary newcall" onClick={() => setSheet('new')}>{t('newCall')}</button>
@@ -169,3 +173,32 @@ function Main({ me, onLang, reloadMe }) {
   );
 }
 
+
+// Once a day, when the app opens with follow-ups due, show a device notification (if allowed).
+async function remindOnce(items, today, t) {
+  try {
+    if (!items.length || !('Notification' in window) || Notification.permission !== 'granted' || localStorage.getItem('gm-reminded') === today) return;
+    localStorage.setItem('gm-reminded', today);
+    const opts = { body: t('notifBody', items.slice(0, 4).map(c => c.name).join('، ')), icon: '/icon.svg', tag: 'gm-follow-' + today };
+    const reg = 'serviceWorker' in navigator ? await navigator.serviceWorker.getRegistration() : null;
+    if (reg) reg.showNotification(t('bannerTitle', items.length), opts); else new Notification(t('bannerTitle', items.length), opts);
+  } catch {}
+}
+
+function TodayBanner({ ctx, items, today, onOpen }) {
+  const { t, lang } = ctx;
+  const [hidden, setHidden] = useState(() => { try { return localStorage.getItem('gm-banner-hidden') === today; } catch { return false; } });
+  if (!items.length || hidden) return null;
+  const hide = () => { setHidden(true); try { localStorage.setItem('gm-banner-hidden', today); } catch {} };
+  return (
+    <div className="today-banner" role="status">
+      <div className="tb-head"><b>🔔 {t('bannerTitle', items.length)}</b>
+        <div className="actions"><button className="btn small primary" onClick={onOpen}>{t('bannerOpen')}</button><button className="btn small" onClick={hide}>{t('bannerHide')}</button></div></div>
+      <div className="tb-list">{items.slice(0, 5).map(c => { const wa = waFor(c, ctx, lang); return (
+        <div key={c.id} className="tb-row">
+          <button type="button" className="linkish" onClick={() => ctx.openCall(c)}><b>{c.name}</b> · <bdi>{c.device}</bdi>{c.follow_up_date < today ? <span className="late"> · {t('bannerLate')}</span> : null}</button>
+          <div className="actions">{wa && <a className="btn small wa" target="_blank" rel="noopener noreferrer" href={wa}>{t('whatsapp')}</a>}<button className="btn small" onClick={() => setFollow(c, null, ctx, t('fuDoneToast'))}>{t('fuDone')}</button></div>
+        </div>); })}</div>
+    </div>
+  );
+}

@@ -69,6 +69,11 @@ const ar = {
   priceLog: 'سجل تعديلات الأسعار', priceLogHint: 'أي إضافة أو تعديل أو مسح بيتسجل باسم وإيميل اللي عمله، ومحدش يقدر يعدّل السجل ده.', plcreate: 'أضاف', pledit: 'عدّل', pldelete: 'شال', plEmpty: 'لسه مفيش تعديلات', plMore: 'عرض أكتر', yes: 'أيوه', no: 'لأ',
   invTitle: 'إضافة حد للتيم بالإيميل', invHint: 'اكتب إيميله، وابعتله لينك الموقع. أول ما يعمل حساب بنفس الإيميل هيدخل على طول بالاسم والوظيفة اللي اخترتها، من غير تفعيل.', invEmail: 'الإيميل', invAdd: 'إضافة', invPending: 'مستنيين يعملوا حساب', invCopy: 'نسخ رسالة الدعوة', invCopied: 'اتنسخت', invRemove: 'إلغاء',
   invMsg: (url, email) => `اتضافلك حساب على سجل مكالمات G Mobile.\nادخل على ${url} ودوس "حساب جديد"، واعمل حساب بالإيميل ده: ${email}`, invBadEmail: 'الإيميل مش مظبوط', invDone: 'اتضاف. ابعتله رسالة الدعوة.', invExists: 'الإيميل ده متضاف قبل كده',
+  fuMine: 'متابعاتي', fuAll: 'كل التيم', fuDone: 'خلصت ✓', fuTomorrow: 'أجّلها لبكرة', fuDoneToast: 'اتشالت من المتابعات', fuMovedToast: 'اتأجلت لبكرة', fuCal: 'ضيفها لتقويم الموبايل', calGoogle: 'Google Calendar', calIcs: 'تقويم الآيفون',
+  calTitle: n => 'متابعة مع ' + n, calWa: 'كلمه على واتساب: ', calHint: 'عشان الموبايل يفكرك الساعة 11 الصبح يوم المتابعة.',
+  bannerTitle: n => n === 1 ? 'عندك متابعة واحدة النهارده' : `عندك ${n} متابعات النهارده`, bannerOpen: 'كل المتابعات', bannerHide: 'إخفاء', bannerLate: 'متأخرة',
+  notifOn: 'فعّل التنبيهات على الجهاز ده', notifOk: 'التنبيهات شغالة على الجهاز ده', notifDenied: 'التنبيهات مقفولة من إعدادات المتصفح', notifHint: 'أول ما تفتح الموقع كل يوم هيطلعلك تنبيه بمتابعاتك. على الآيفون لازم تضيف الموقع للشاشة الرئيسية الأول (Share ← Add to Home Screen).',
+  notifBody: names => 'كلّم: ' + names,
   xCols: ['التاريخ', 'الوقت', 'الاسم', 'التليفون', 'الفئة', 'الجهاز', 'الفئة السعرية', 'السعر اللي اتقال', 'اتباع بكام', 'عرف منين', 'الكامبين', 'الإعلان', 'كود الإعلان', 'الحالة', 'سبب الكنسلة', 'تفاصيل الكنسلة', 'الفرع', 'متابعة يوم', 'ملاحظات', 'سجلها', 'مسؤول عن الديل', 'آخر تعديل', 'عدّلها'],
 };
 
@@ -125,6 +130,11 @@ const en = {
   priceLog: 'Price change log', priceLogHint: "Every add, edit or removal is recorded with the person's name and email, and nobody can edit this log.", plcreate: 'added', pledit: 'edited', pldelete: 'removed', plEmpty: 'No changes yet', plMore: 'Show more', yes: 'Yes', no: 'No',
   invTitle: 'Add someone to the team by email', invHint: 'Enter their email and send them the site link. When they sign up with that email they get straight in with the name and job you chose, no activation needed.', invEmail: 'Email', invAdd: 'Add', invPending: 'Waiting to sign up', invCopy: 'Copy invite message', invCopied: 'Copied', invRemove: 'Cancel',
   invMsg: (url, email) => `You have an account on the G Mobile call log.\nGo to ${url}, tap "New account" and sign up with this email: ${email}`, invBadEmail: 'That email doesn\'t look right', invDone: 'Added. Send them the invite message.', invExists: 'That email is already on the list',
+  fuMine: 'Mine', fuAll: 'Whole team', fuDone: 'Done ✓', fuTomorrow: 'Move to tomorrow', fuDoneToast: 'Removed from follow-ups', fuMovedToast: 'Moved to tomorrow', fuCal: 'Add to phone calendar', calGoogle: 'Google Calendar', calIcs: 'iPhone calendar',
+  calTitle: n => 'Follow up with ' + n, calWa: 'WhatsApp: ', calHint: 'So your phone reminds you at 11 AM on the day.',
+  bannerTitle: n => n === 1 ? 'You have 1 follow-up today' : `You have ${n} follow-ups today`, bannerOpen: 'All follow-ups', bannerHide: 'Hide', bannerLate: 'late',
+  notifOn: 'Turn on reminders on this device', notifOk: 'Reminders are on for this device', notifDenied: 'Notifications are blocked in this browser\'s settings', notifHint: 'Each day when you open the site you get a reminder of your follow-ups. On iPhone, add the site to the Home Screen first (Share → Add to Home Screen).',
+  notifBody: names => 'Call: ' + names,
   xCols: ['Date', 'Time', 'Name', 'Phone', 'Category', 'Device', 'Price range', 'Price quoted', 'Sold for', 'Source', 'Campaign', 'Ad', 'Ad ID', 'Status', 'Cancel reason', 'Cancel detail', 'Branch', 'Call back on', 'Notes', 'Logged by', 'Deal owner', 'Last edited', 'Edited by'],
 };
 
