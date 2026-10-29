@@ -11,7 +11,7 @@ export const LISTS = {
 };
 
 const ar = {
-  appName: 'سجل مكالمات G Mobile', tagline: 'كل مكالمة من الإعلانات، مين مسؤول عنها، وحصل فيها إيه',
+  appName: 'سجل مكالمات G\u00a0Mobile', tagline: 'كل مكالمة من الإعلانات، مين مسؤول عنها، وحصل فيها إيه',
   tabCalls: 'المكالمات', tabFollow: 'المتابعات', tabAnalysis: 'التحليلات', tabLog: 'سجل التعديلات', tabPrices: 'الأسعار', tabTeam: 'التيم', tabSettings: 'الإعدادات',
   newCall: '+ تسجيل مكالمة', period: 'الفترة', from: 'من', to: 'لحد', category: 'الفئة', owner: 'مسؤول عن الديل', all: 'الكل',
   search: 'بحث بالاسم أو الرقم أو الجهاز', searchPh: 'مثلًا 0111 أو S26 Ultra', excel: 'Excel', metaCsv: 'ملف Offline لميتا',
@@ -65,7 +65,7 @@ const ar = {
 };
 
 const en = {
-  appName: 'G Mobile Call Log', tagline: 'Every call from the ads, who owns it, and what happened next',
+  appName: 'G\u00a0Mobile Call Log', tagline: 'Every call from the ads, who owns it, and what happened next',
   tabCalls: 'Calls', tabFollow: 'Follow-ups', tabAnalysis: 'Analysis', tabLog: 'Activity log', tabPrices: 'Prices', tabTeam: 'Team', tabSettings: 'Settings',
   newCall: '+ Log a call', period: 'Period', from: 'From', to: 'To', category: 'Category', owner: 'Deal owner', all: 'All',
   search: 'Search name, number or device', searchPh: 'e.g. 0111 or S26 Ultra', excel: 'Excel', metaCsv: 'Meta offline file',
