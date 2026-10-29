@@ -5,7 +5,7 @@ import { useT, money } from '../lib/i18n.js';
 const FIELD = {
   phone: ['التليفون', 'Phone'], name: ['الاسم', 'Name'], category: ['الفئة', 'Category', 'cat'], device: ['الجهاز', 'Device'], product_id: null,
   price_range: ['الفئة السعرية', 'Price range', 'price'], quoted_price: ['السعر اللي اتقال', 'Price quoted', 'money'], sale_amount: ['اتباع بكام', 'Sold for', 'money'],
-  source: ['عرف منين', 'Source', 'source'], campaign_id: ['الكامبين', 'Campaign', 'campaign'], branch: ['الفرع', 'Branch', 'branch'], status: ['الحالة', 'Status', 'status'],
+  source: ['عرف منين', 'Source', 'source'], campaign_id: ['الكامبين', 'Campaign', 'campaign'], ad_id: ['الإعلان', 'Ad', 'ad'], branch: ['الفرع', 'Branch', 'branch'], status: ['الحالة', 'Status', 'status'],
   cancel_reason: ['سبب الكنسلة', 'Cancel reason', 'cancel'], cancel_note: ['تفاصيل الكنسلة', 'Cancel detail'], follow_up_date: ['متابعة يوم', 'Call back on'], notes: ['ملاحظات', 'Notes'], owner_id: ['مسؤول عن الديل', 'Deal owner', 'person'],
 };
 
@@ -15,7 +15,7 @@ export function describeEvent(ev, ctx, t, L, lang) {
   if (ev.action === 'delete') return [who, t('evDelete'), ''];
   const val = (kind, v) => {
     if (v === null || v === '' || v === undefined) return t('emptyVal');
-    if (kind === 'money') return money(v); if (kind === 'campaign') return ctx.campaignOf(v); if (kind === 'person') return ctx.nameOf(v);
+    if (kind === 'money') return money(v); if (kind === 'campaign') return ctx.campaignOf(v); if (kind === 'ad') return ctx.adOf(v) || '—'; if (kind === 'person') return ctx.nameOf(v);
     if (kind) return L(kind, v); return String(v);
   };
   const parts = Object.entries(ev.changes || {}).filter(([k]) => FIELD[k]).map(([k, [a, b]]) => `${FIELD[k][lang === 'ar' ? 0 : 1]}: ${val(FIELD[k][2], a)} ${lang === 'ar' ? '←' : '→'} ${val(FIELD[k][2], b)}`);

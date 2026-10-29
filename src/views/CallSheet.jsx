@@ -4,7 +4,7 @@ import { useT, money } from '../lib/i18n.js';
 import { usePhoneHistory } from './Calls.jsx';
 import { describeEvent } from './ActivityLog.jsx';
 
-const EMPTY = { phone: '', name: '', category: 'iphone', device: '', product_id: null, price_range: '', quoted_price: '', sale_amount: '', source: '', campaign_id: '', branch: '', status: 'inquiry', cancel_reason: '', cancel_note: '', follow_up_date: '', notes: '', owner_id: '' };
+const EMPTY = { phone: '', name: '', category: 'iphone', device: '', product_id: null, price_range: '', quoted_price: '', sale_amount: '', source: '', campaign_id: '', ad_id: '', branch: '', status: 'inquiry', cancel_reason: '', cancel_note: '', follow_up_date: '', notes: '', owner_id: '' };
 const EDITABLE = Object.keys(EMPTY);
 
 export default function CallSheet({ ctx, call, onClose, onSaved }) {
@@ -38,12 +38,11 @@ export default function CallSheet({ ctx, call, onClose, onSaved }) {
   const waTpl = ctx.settings[lang === 'ar' ? 'whatsapp_ar' : 'whatsapp_en'] || '';
   const waHref = isMobile(phone) ? waLink(phone, waTpl, { name: d.name.split(' ')[0], device: d.device, price: d.quoted_price ? money(toNum(d.quoted_price)) : '' }) : null;
   const ownerOptions = ctx.profiles.filter(p => p.active || p.id === d.owner_id);
-  const campOptions = ctx.campaigns.filter(c => c.active || c.id === d.campaign_id);
 
   async function save() {
     const data = { ...d, phone, name: d.name.trim(), device: d.device.trim(), notes: d.notes.trim(), cancel_note: d.cancel_note.trim() };
     data.quoted_price = toNum(d.quoted_price); data.sale_amount = toNum(d.sale_amount);
-    for (const k of ['price_range', 'source', 'campaign_id', 'branch', 'cancel_reason', 'follow_up_date', 'owner_id']) if (!data[k]) data[k] = null;
+    for (const k of ['price_range', 'source', 'campaign_id', 'ad_id', 'branch', 'cancel_reason', 'follow_up_date', 'owner_id']) if (!data[k]) data[k] = null;
     if (!data.price_range && data.quoted_price) data.price_range = priceBucket(data.quoted_price);
     if (data.status !== 'cancelled') { data.cancel_reason = null; data.cancel_note = null; }
     if (data.status !== 'delivered') data.sale_amount = data.sale_amount ?? null;
@@ -55,6 +54,7 @@ export default function CallSheet({ ctx, call, onClose, onSaved }) {
     setBusy(true); setErr('');
     try {
       if (isNew) {
+        if (!data.ad_id) delete data.ad_id; // keeps saving working on a database that hasn't run update 2 yet
         const { error } = await supabase.from('calls').insert(data); if (error) throw error;
         ctx.toast(t('saved'));
       } else {
@@ -133,12 +133,9 @@ export default function CallSheet({ ctx, call, onClose, onSaved }) {
             <div className="field"><label htmlFor="s-branch">{t('fBranch')}{t('optional')}</label>
               <select id="s-branch" value={d.branch || ''} onChange={e => set('branch', e.target.value)}><option value="">—</option>{opts('branch').map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></div>
           </div>
-          <div className="grid2">
-            <div className="field"><label htmlFor="s-source">{t('fSource')}{t('optional')}</label>
-              <select id="s-source" value={d.source || ''} onChange={e => set('source', e.target.value)}><option value="">—</option>{opts('source').map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></div>
-            <div className="field"><label htmlFor="s-camp">{t('fCampaign')}{t('optional')}</label>
-              <select id="s-camp" value={d.campaign_id || ''} onChange={e => set('campaign_id', e.target.value)}><option value="">—</option>{campOptions.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></div>
-          </div>
+          <div className="field"><label htmlFor="s-source">{t('fSource')}{t('optional')}</label>
+            <select id="s-source" value={d.source || ''} onChange={e => set('source', e.target.value)}><option value="">—</option>{opts('source').map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></div>
+          <AdPicker ctx={ctx} d={d} setD={setD} />
           <div className="field"><label htmlFor="s-notes">{t('fNotes')}</label><textarea id="s-notes" value={d.notes || ''} onChange={e => set('notes', e.target.value)} /></div>
 
           {!isNew && <section style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -177,6 +174,51 @@ function ProductPicker({ ctx, d, setD, firstRef }) {
           <span>{p.name}{!p.in_stock && <span className="sub">{t('outStock')}</span>}</span><span className="mono">{p.price != null ? money(p.price) : ''}</span></button>)}
       </div>}
       {d.product_id && <span className="hint">{t('fromList')}</span>}
+    </div>
+  );
+}
+
+const isRunning = st => st === 'ACTIVE' || st === 'WITH_ISSUES';
+
+// Campaign -> ad, or paste an ad / campaign ID from Ads Manager and both get filled in.
+function AdPicker({ ctx, d, setD }) {
+  const { t } = useT();
+  const [code, setCode] = useState('');
+  const camps = ctx.campaigns.filter(c => c.active || c.id === d.campaign_id);
+  const running = camps.filter(c => !c.meta_id || isRunning(c.status)), paused = camps.filter(c => c.meta_id && !isRunning(c.status));
+  const ads = d.campaign_id ? ctx.ads.filter(a => a.campaign_id === d.campaign_id).sort((a, b) => Number(isRunning(b.status)) - Number(isRunning(a.status))) : [];
+  const q = code.replace(/\D/g, '');
+  const hitAd = q.length >= 6 ? ctx.ads.find(a => a.meta_id === q) : null;
+  const hitCamp = q.length >= 6 && !hitAd ? ctx.campaigns.find(c => c.meta_id === q) : null;
+  function onCode(v) {
+    setCode(v);
+    const id = v.replace(/\D/g, ''); if (id.length < 6) return;
+    const ad = ctx.ads.find(a => a.meta_id === id);
+    if (ad) { setD(x => ({ ...x, ad_id: ad.id, campaign_id: ad.campaign_id || x.campaign_id })); return; }
+    const c = ctx.campaigns.find(x => x.meta_id === id);
+    if (c) setD(x => ({ ...x, campaign_id: c.id, ad_id: '' }));
+  }
+  const opt = c => <option key={c.id} value={c.id}>{c.name}</option>;
+  return (
+    <div className="adbox">
+      <div className="field"><label htmlFor="s-adcode">{t('fAdCode')}{t('optional')}</label>
+        <input id="s-adcode" className="mono" dir="ltr" inputMode="numeric" autoComplete="off" placeholder={t('fAdCodePh')} value={code} onChange={e => onCode(e.target.value)} />
+        {hitAd && <span className="hint ok">{t('adFound', hitAd.name)}</span>}
+        {hitCamp && <span className="hint ok">{t('adFound', hitCamp.name)}</span>}
+        {q.length >= 6 && !hitAd && !hitCamp && <span className="hint warn">{t('adNotFound')}</span>}
+      </div>
+      <div className="grid2">
+        <div className="field"><label htmlFor="s-camp">{t('fCampaign')}{t('optional')}</label>
+          <select id="s-camp" value={d.campaign_id || ''} onChange={e => setD(x => ({ ...x, campaign_id: e.target.value, ad_id: '' }))}>
+            <option value="">—</option>
+            {paused.length ? <><optgroup label={t('grpActive')}>{running.map(opt)}</optgroup><optgroup label={t('grpPaused')}>{paused.map(opt)}</optgroup></> : running.map(opt)}
+          </select></div>
+        <div className="field"><label htmlFor="s-ad">{t('fAd')}{t('optional')}</label>
+          <select id="s-ad" value={d.ad_id || ''} disabled={!d.campaign_id} onChange={e => setD(x => ({ ...x, ad_id: e.target.value }))}>
+            <option value="">{d.campaign_id ? '—' : t('pickCampFirst')}</option>
+            {ads.map(a => <option key={a.id} value={a.id}>{a.name}{isRunning(a.status) ? '' : ' · ' + t('stStopped')}</option>)}
+          </select></div>
+      </div>
     </div>
   );
 }

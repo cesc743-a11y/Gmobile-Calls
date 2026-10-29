@@ -61,7 +61,13 @@ const ar = {
   aEmpty: 'مفيش داتا كفاية في الفترة دي', aEmptySub: 'التحليلات بتتحسب من المكالمات المتسجلة في الفترة اللي مختارها فوق.', aNote: 'محسوب على الفترة والفلاتر اللي فوق. "وصلوا لحجز" يعني المكالمة اتعمل فيها حجز في أي وقت. نسبة القفل = اللي استلم ÷ كل المكالمات اللي الشخص مسؤول عنها.',
   aDeliveredOf: (a, b) => `${a} استلم من ${b}`, aNoData: 'مفيش', hourFmt: h => h + ':00', noCampaign: 'من غير كامبين', egp: ' ج',
   sheetName: 'المكالمات', fileBase: 'مكالمات-GMobile', noRows: 'مفيش مكالمات في الفلتر ده', noSales: 'مفيش بيعات استلمت في الفترة دي',
-  xCols: ['التاريخ', 'الوقت', 'الاسم', 'التليفون', 'الفئة', 'الجهاز', 'الفئة السعرية', 'السعر اللي اتقال', 'اتباع بكام', 'عرف منين', 'الكامبين', 'الحالة', 'سبب الكنسلة', 'تفاصيل الكنسلة', 'الفرع', 'متابعة يوم', 'ملاحظات', 'سجلها', 'مسؤول عن الديل', 'آخر تعديل', 'عدّلها'],
+  fAd: 'الإعلان', fAdCode: 'كود الإعلان أو الكامبين (ID)', fAdCodePh: 'الصق الـ ID من Ads Manager', adFound: n => 'لقيته: ' + n, adNotFound: 'الكود ده مش موجود عندنا. الأدمن يعمل مزامنة أو يضيفه من الإعدادات.',
+  grpActive: 'شغالة دلوقتي', grpPaused: 'متوقفة', pickCampFirst: 'اختار الكامبين الأول', aAds: 'الإعلانات', noAd: 'من غير إعلان',
+  syncTitle: 'المزامنة مع ميتا', syncHint: 'بتسحب كل الكامبينز والإعلانات من حسابات الإعلانات بأسمائها وأكوادها، من غير ما حد يكتبها بإيده.', syncBtn: 'مزامنة دلوقتي', syncing: 'بيسحب من ميتا...',
+  syncDone: (c, a) => `اتسحب ${c} كامبين و ${a} إعلان`, syncNotSetup: 'المزامنة التلقائية لسه مش متفعّلة. خطواتها في ملف README تحت "مزامنة ميتا".', syncFail: m => 'المزامنة فشلت: ' + m, lastSync: d => 'آخر مزامنة: ' + d, neverSynced: 'لسه ما حصلش مزامنة',
+  campMetaId: 'Meta ID (اختياري)', campSearch: 'دور باسم أو ID', adsTitle: 'الإعلانات وأكوادها', adsHint: 'لو في إعلان مش ظاهر، ضيف الـ Ad ID بتاعه من Ads Manager واختار الكامبين بتاعه.', adId: 'Ad ID', adName: 'اسم الإعلان', adAdd: 'إضافة إعلان', adsCount: n => n + ' إعلان', showing: (a, b) => `معروض ${a} من ${b}`, stRunning: 'شغال', stStopped: 'متوقف', colCampaign: 'الكامبين', colStatus: 'الحالة', idTaken: 'الكود ده متضاف قبل كده',
+  priceLog: 'سجل تعديلات الأسعار', priceLogHint: 'أي إضافة أو تعديل أو مسح بيتسجل باسم وإيميل اللي عمله، ومحدش يقدر يعدّل السجل ده.', plcreate: 'أضاف', pledit: 'عدّل', pldelete: 'شال', plEmpty: 'لسه مفيش تعديلات', plMore: 'عرض أكتر', yes: 'أيوه', no: 'لأ',
+  xCols: ['التاريخ', 'الوقت', 'الاسم', 'التليفون', 'الفئة', 'الجهاز', 'الفئة السعرية', 'السعر اللي اتقال', 'اتباع بكام', 'عرف منين', 'الكامبين', 'الإعلان', 'كود الإعلان', 'الحالة', 'سبب الكنسلة', 'تفاصيل الكنسلة', 'الفرع', 'متابعة يوم', 'ملاحظات', 'سجلها', 'مسؤول عن الديل', 'آخر تعديل', 'عدّلها'],
 };
 
 const en = {
@@ -109,7 +115,13 @@ const en = {
   aEmpty: 'Not enough data in this period', aEmptySub: 'Analysis is calculated from the calls logged in the period selected above.', aNote: 'Calculated for the period and filters above. "Reached booking" counts any call that was booked at some point. Close rate = delivered ÷ all calls the person owns.',
   aDeliveredOf: (a, b) => `${a} delivered of ${b}`, aNoData: 'None', hourFmt: h => h + ':00', noCampaign: 'No campaign', egp: ' EGP',
   sheetName: 'Calls', fileBase: 'GMobile-calls', noRows: 'No calls in this filter', noSales: 'No delivered sales in this period',
-  xCols: ['Date', 'Time', 'Name', 'Phone', 'Category', 'Device', 'Price range', 'Price quoted', 'Sold for', 'Source', 'Campaign', 'Status', 'Cancel reason', 'Cancel detail', 'Branch', 'Call back on', 'Notes', 'Logged by', 'Deal owner', 'Last edited', 'Edited by'],
+  fAd: 'Ad', fAdCode: 'Ad or campaign ID', fAdCodePh: 'Paste the ID from Ads Manager', adFound: n => 'Found: ' + n, adNotFound: "That ID isn't in the list. An admin can sync or add it in Settings.",
+  grpActive: 'Running now', grpPaused: 'Paused', pickCampFirst: 'Pick the campaign first', aAds: 'Ads', noAd: 'No ad',
+  syncTitle: 'Sync with Meta', syncHint: 'Pulls every campaign and ad from the ad accounts with their names and IDs, so nobody types them by hand.', syncBtn: 'Sync now', syncing: 'Pulling from Meta…',
+  syncDone: (c, a) => `Pulled ${c} campaigns and ${a} ads`, syncNotSetup: 'Automatic sync isn\'t switched on yet. The steps are in the README under "Meta sync".', syncFail: m => 'Sync failed: ' + m, lastSync: d => 'Last sync: ' + d, neverSynced: 'Not synced yet',
+  campMetaId: 'Meta ID (optional)', campSearch: 'Search by name or ID', adsTitle: 'Ads and their IDs', adsHint: "If an ad is missing, add its Ad ID from Ads Manager and pick its campaign.", adId: 'Ad ID', adName: 'Ad name', adAdd: 'Add ad', adsCount: n => n + ' ads', showing: (a, b) => `Showing ${a} of ${b}`, stRunning: 'Running', stStopped: 'Paused', colCampaign: 'Campaign', colStatus: 'Status', idTaken: 'That ID is already in the list',
+  priceLog: 'Price change log', priceLogHint: "Every add, edit or removal is recorded with the person's name and email, and nobody can edit this log.", plcreate: 'added', pledit: 'edited', pldelete: 'removed', plEmpty: 'No changes yet', plMore: 'Show more', yes: 'Yes', no: 'No',
+  xCols: ['Date', 'Time', 'Name', 'Phone', 'Category', 'Device', 'Price range', 'Price quoted', 'Sold for', 'Source', 'Campaign', 'Ad', 'Ad ID', 'Status', 'Cancel reason', 'Cancel detail', 'Branch', 'Call back on', 'Notes', 'Logged by', 'Deal owner', 'Last edited', 'Edited by'],
 };
 
 export const DICT = { ar, en };

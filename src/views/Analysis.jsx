@@ -87,6 +87,7 @@ export default function Analysis({ ctx, calls }) {
         <div className="panel"><h3>{t('aByCat')}</h3><HBars total={n} empty={t('aNoData')} rows={group('category', 'cat').map(([k, items]) => conv(L('cat', k), items))} /></div>
         <div className="panel"><h3>{t('aByPrice')}</h3><HBars total={n} empty={t('aNoData')} rows={group('price_range', 'price').map(([k, items]) => conv(k ? L('price', k) : '—', items))} /></div>
         <div className="panel"><h3>{t('aCampaign')}</h3><HBars total={n} empty={t('aNoData')} rows={group('campaign_id').sort((a, b) => b[1].length - a[1].length).map(([k, items]) => conv(k ? ctx.campaignOf(k) : t('noCampaign'), items))} /></div>
+        <div className="panel"><h3>{t('aAds')}</h3><HBars total={n} empty={t('aNoData')} rows={group('ad_id').filter(([k]) => k).sort((a, b) => b[1].length - a[1].length).slice(0, 12).map(([k, items]) => conv(ctx.adOf(k) || '—', items))} /></div>
         <div className="panel"><h3>{t('aSource')}</h3><HBars total={n} empty={t('aNoData')} rows={group('source', 'source').map(([k, items]) => conv(k ? L('source', k) : '—', items))} /></div>
         <div className="panel"><h3>{t('aDevices')}</h3><HBars total={n} empty={t('aNoData')} rows={devRows} /></div>
         <div className="panel"><h3>{t('aCancel')}</h3><HBars total={cancelled.length} empty={t('aNoData')} rows={group('cancel_reason', 'cancel', cancelled).map(([k, items]) => ({ label: L('cancel', k), n: items.length }))} /></div>

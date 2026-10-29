@@ -175,3 +175,15 @@ table.mini td,table.mini th{padding:7px 8px}
 }
 @media (max-width:460px){.grid2{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:no-preference){.sheet{animation:fade .18s ease-out}@keyframes fade{from{opacity:.4}}}
+.adbox{display:flex;flex-direction:column;gap:10px;padding:12px;border:1px dashed var(--line);border-radius:12px}
+.hint.ok{color:var(--s-done)}
+.hint.warn{color:var(--s-cancel)}
+.pill{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--bg);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.pill.on{color:var(--s-done);border-color:currentColor}
+.tall{max-height:420px;overflow:auto}
+.plog{display:flex;flex-direction:column}
+.plog .pev{display:flex;flex-wrap:wrap;gap:4px 8px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px;align-items:baseline}
+.plog .pev:last-child{border-bottom:0}
+.plog time{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums;min-width:120px}
+.plog .who b{font-weight:600}
+.plog .ch{color:var(--muted)}

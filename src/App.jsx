@@ -60,6 +60,7 @@ function Main({ me, onLang, reloadMe }) {
   const [profiles, setProfiles] = useState([]);
   const [products, setProducts] = useState([]);
   const [campaigns, setCampaigns] = useState([]);
+  const [ads, setAds] = useState([]);
   const [settings, setSettings] = useState({});
   const [sheet, setSheet] = useState(null);
   const [toastMsg, setToastMsg] = useState('');
@@ -75,13 +76,14 @@ function Main({ me, onLang, reloadMe }) {
     if (data) setFollow(data);
   }, []);
   const loadRefs = useCallback(async () => {
-    const [p, pr, c, s] = await Promise.all([
+    const [p, pr, c, a, s] = await Promise.all([
       supabase.from('profiles').select('*').order('created_at'),
       supabase.from('products').select('*').order('name'),
       supabase.from('campaigns').select('*').order('created_at', { ascending: false }),
+      supabase.from('ads').select('*').order('name').limit(5000),
       supabase.from('settings').select('*'),
     ]);
-    if (p.data) setProfiles(p.data); if (pr.data) setProducts(pr.data); if (c.data) setCampaigns(c.data);
+    if (p.data) setProfiles(p.data); if (pr.data) setProducts(pr.data); if (c.data) setCampaigns(c.data); if (a.data) setAds(a.data);
     if (s.data) setSettings(Object.fromEntries(s.data.map(r => [r.key, r.value])));
   }, []);
   useEffect(() => { loadCalls(); }, [loadCalls]);
@@ -96,6 +98,9 @@ function Main({ me, onLang, reloadMe }) {
 
   const nameOf = useMemo(() => { const m = Object.fromEntries(profiles.map(p => [p.id, p.full_name || p.email])); return id => m[id] || t('someone'); }, [profiles, lang]);
   const campaignOf = useMemo(() => { const m = Object.fromEntries(campaigns.map(c => [c.id, c.name])); return id => id ? (m[id] || '—') : ''; }, [campaigns]);
+  const adById = useMemo(() => Object.fromEntries(ads.map(a => [a.id, a])), [ads]);
+  const adOf = id => (id && adById[id] ? adById[id].name : '');
+  const adMetaId = id => (id && adById[id] ? adById[id].meta_id : '');
   const filtered = useMemo(() => {
     const q = filters.q.trim().toLowerCase(); const qp = q.replace(/\D/g, '');
     return calls.filter(c => {
@@ -108,7 +113,7 @@ function Main({ me, onLang, reloadMe }) {
   const today = dayKey();
   const dueCount = follow.filter(c => c.follow_up_date <= today).length;
   const after = async (fn) => { await fn; loadCalls(); loadFollow(); };
-  const ctx = { me, isAdmin, t, lang, nameOf, campaignOf, profiles, products, campaigns, settings, toast, openCall: c => setSheet(c || 'new'), range, reloadRefs: loadRefs, reloadMe };
+  const ctx = { me, isAdmin, t, lang, nameOf, campaignOf, adOf, adMetaId, profiles, products, campaigns, ads, settings, toast, openCall: c => setSheet(c || 'new'), range, reloadRefs: loadRefs, reloadMe };
 
   const months = []; { let m = today.slice(0, 7); for (let i = 0; i < 36; i++) { months.push(m); m = addDays(m + '-01', -1).slice(0, 7); } }
   const tabs = [['calls', t('tabCalls')], ['follow', t('tabFollow')], ['analysis', t('tabAnalysis')], ['log', t('tabLog')], ['prices', t('tabPrices')], ['team', t('tabTeam')], ...(isAdmin ? [['settings', t('tabSettings')]] : [])];

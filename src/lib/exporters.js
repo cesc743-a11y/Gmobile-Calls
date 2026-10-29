@@ -5,7 +5,7 @@ import { DICT, LISTS, money } from './i18n.js';
 function rows(calls, ctx) {
   const { lang } = ctx; const L = (list, v) => { if (!v) return ''; const r = LISTS[list].find(x => x[0] === v); return r ? r[lang === 'ar' ? 1 : 2] : v; };
   return calls.map(c => [c.call_date, fmtTime(c.created_at, lang), c.name, c.phone, L('cat', c.category), c.device, L('price', c.price_range), c.quoted_price ?? '', c.sale_amount ?? '',
-    L('source', c.source), ctx.campaignOf(c.campaign_id), L('status', c.status), L('cancel', c.cancel_reason), c.cancel_note || '', L('branch', c.branch), c.follow_up_date || '', c.notes || '',
+    L('source', c.source), ctx.campaignOf(c.campaign_id), ctx.adOf(c.ad_id), ctx.adMetaId(c.ad_id), L('status', c.status), L('cancel', c.cancel_reason), c.cancel_note || '', L('branch', c.branch), c.follow_up_date || '', c.notes || '',
     ctx.nameOf(c.created_by), ctx.nameOf(c.owner_id), c.updated_at ? fmtDate(c.updated_at, lang) + ' ' + fmtTime(c.updated_at, lang) : '', ctx.nameOf(c.updated_by)]);
 }
 const fname = (ctx, ext, base) => `${base || DICT[ctx.lang].fileBase}-${ctx.range.from}-${ctx.range.to}.${ext}`;

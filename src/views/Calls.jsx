@@ -33,7 +33,7 @@ export default function Calls({ ctx, calls, total, status, setStatus, q }) {
             : <tr key={r.key} className="call" tabIndex={0} onClick={() => ctx.openCall(r.c)} onKeyDown={e => { if (e.key === 'Enter') ctx.openCall(r.c); }}>
                 <td><span className="mono">{fmtTime(r.c.created_at, lang)}</span></td>
                 <td><b>{r.c.name}</b><span className="sub mono">{r.c.phone}</span></td>
-                <td>{r.c.device}<span className="sub">{L('cat', r.c.category)}{r.c.campaign_id ? ' · ' + ctx.campaignOf(r.c.campaign_id) : ''}</span></td>
+                <td>{r.c.device}<span className="sub">{L('cat', r.c.category)}{r.c.campaign_id ? ' · ' + ctx.campaignOf(r.c.campaign_id) : ''}{r.c.ad_id ? ' · ' + ctx.adOf(r.c.ad_id) : ''}</span></td>
                 <td>{priceText(r.c)}{r.c.quoted_price && r.c.price_range ? <span className="sub">{L('price', r.c.price_range)}</span> : null}</td>
                 <td><span className={'pill st-' + r.c.status}>{L('status', r.c.status)}</span>{statusSub(r.c) && <span className="sub">{statusSub(r.c)}</span>}</td>
                 <td>{ctx.nameOf(r.c.owner_id)}{r.c.created_by !== r.c.owner_id && <span className="sub">{t('loggedBy') + ctx.nameOf(r.c.created_by)}</span>}</td>
